@@ -1,0 +1,135 @@
+#Fall 2017
+import random
+def instructions():
+    print("You are playing against computer")
+    print("Roll a die, Keep adding the score")
+    print("You can stop rolling anytime, but if you roll a six")
+    print("Your turn ends and your score for that round is zero")
+    print("Same is the case for computer")
+    print("First to score a 50 Wins!!","\n")
+    
+def roll():
+    x=random.randint(1,6)
+    return x;
+def roll_biased():
+    x_1=random.randint(1,5)
+    return x_1;
+
+def human_move(computer_score,human_score):
+    print("Your Score is ",human_score)
+    print("Computer's Score is",computer_score)
+    round_score=0
+    score_difference=computer_score-human_score
+    if(score_difference>0):
+        print("you are lagging by ",score_difference,"\n")
+    else:
+        print("you are leading by ",abs(score_difference),"\n")
+
+    ask_user=ask_yes_or_no("Do you want to play? ")
+
+    while(ask_user==True):
+        user_roll=roll()
+            
+        if (user_roll==6):
+            print("You rolled a six ",)
+            print("Score for this round is 0","\n")
+            return 0
+        
+        elif(user_roll!=6):
+            round_score=round_score+user_roll
+            print("You have rolled a ",user_roll)
+            
+        ask_user=ask_yes_or_no("Do you want to play? ")
+    print("You score for this round is ",round_score,"\n")                  
+    return round_score;
+
+
+def computer_move(computer_score,human_score):
+    #the logic is to play more aggressively when the score difference is high
+    #the computer will play with a biased method where in it wont roll a six
+    #this will help the computer to cover up the difference!
+    print("Computer's Turn","\n")
+    comp_round_score=0
+    score_diff=computer_score-human_score
+    comp_roll=roll()
+    count=0
+    while(0<=abs(score_diff)<12)&(count<4):
+        comp_roll=roll()
+        print ("Computer Rolled a ",comp_roll)
+        if (comp_roll==6):
+            print("Turn ends ","\n")
+            return 0
+        else:
+            comp_round_score=comp_round_score+comp_roll
+            count=count+1
+        count=count+1
+        score_diff=computer_score-human_score
+    count=0
+    while(abs(score_diff)>=12):
+        comp_roll=roll_biased()
+        if(count<4):
+            comp_round_score=comp_round_score+comp_roll
+            count=count+1
+            print ("Computer rolled a",comp_roll)
+        else:
+            break
+    print("Computer scored ",comp_round_score,"\n")
+    return comp_round_score;
+
+        
+def is_game_over(computer_score,human_score):
+    if(human_score>=50)or(computer_score>=50)and(human_score!=computer_score):
+        return True
+    else:
+        return False
+
+
+def ask_yes_or_no(prompt):
+    x=True
+    flag=1
+    while(x==True):
+       user_input=input(prompt)
+       if(user_input[0]=='y')or(user_input[0]=='Y'):
+           flag=1
+           x=False
+       elif(user_input[0]=='n')or(user_input[0]=='N'):
+           flag=0
+           x=False
+       else:
+           print("Enter a valid input")
+           x=True
+    if(flag==1):
+       return True
+    else:
+       return False
+def show_result(computer_score,human_score):
+    diff=human_score-computer_score
+    if(diff>0):
+        print("You have won and your score is",human_score)
+    elif(computer_score>=50):
+        print("You lost by",abs(diff))
+
+def main():
+    instructions()
+    comp_score=0
+    hum_score=0
+    computer_score=0
+    human_score=0
+    x=1
+    while(x==1):
+        if(computer_score>=50)or(human_score>=50):
+            game_cond=is_game_over(human_score,computer_score)
+            if(game_cond==True):
+                show_result(computer_score,human_score)
+                x=0
+            else:
+                x=1
+        else:
+            comp_score=computer_move(computer_score,human_score)
+            computer_score=comp_score+computer_score
+            hum_score=human_move(computer_score,human_score)
+            human_score=human_score+hum_score
+            
+        
+            
+main()        
